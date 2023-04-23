@@ -1,0 +1,37 @@
+version: '3.4'
+
+networks:
+  variacaoativoapi-dev:
+    driver: bridge 
+
+services:
+  variacaoativoapi:
+    image: variacaoativoapi:latest
+    depends_on:
+      - "postgres_image"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"     
+    environment:
+      DB_CONNECTION_STRING: "host=postgres_image;port=5432;database=ativos_financeiros_db;username=postgres;password=teste123"
+    networks:
+      - variacaoativoapi-dev  
+  
+  postgres_image:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - ./ativos_financeiros_db.sql:/docker-entrypoint-initdb.d/db.sql
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "teste123"
+      POSTGRES_DB: "ativos_financeiros_db"
+    networks:
+      - variacaoativoapi-dev
+volumes:
+  postgres-data:
