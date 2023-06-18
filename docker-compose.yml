@@ -33,5 +33,23 @@ services:
       POSTGRES_DB: "ativos_financeiros_db"
     networks:
       - variacaoativoapi-dev
-volumes:
-  postgres-data:
+
+
+  prometheus:
+    build:
+      context: ./prometheus
+      dockerfile: Dockerfile
+      args:
+        version: 1
+    image: prometheus-local
+    restart: always
+    ports: 
+      - 9090:9090
+    networks:
+      - variacaoativoapi-dev
+     
+volumes:    
+  prometheus-data:
+  postgres-data:  
+   
+   
